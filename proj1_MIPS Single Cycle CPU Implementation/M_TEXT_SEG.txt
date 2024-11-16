@@ -1,0 +1,82 @@
+//i opcode 6 rs 5 rt 5 im 16
+//r opcpde 6 rd 5 rs 5 rt 5 shamt 5 func 6
+00110100_00000010_00000000_00000100 // ori $2 | 0x0004 -> 0000004
+00110100_00000011_01010110_01111000 // ori $3 | 0x5678 -> 00005678
+00111100_00000101_11111111_11111111 // lui $5, 0xFFFF0000 삽입
+00110100_10100101_11111111_11111111 // lui $5| 0xFFFF -> FFFFFFFF
+00111100_00000110_01111111_11111111 // ori $6, 0x7FFF // 상수 삽입
+00110100_11000110_10111111_11111111 // ori $6, 0x0000BFFF // 상수 삽입
+
+
+//초기 레지스터 세팅
+//$2 : 0x0000_0004
+//$3 : 0x0000_5678
+//$5 : 0xFFFF_FFFF
+//$6 : 0x7FFF_BFFF 70ns
+000000_00011_00010_00100_00000_101010 // $3 < $2? => $4(0)
+000000_00101_00110_00111_00000_101010 // $5 < $6? => $7(1)
+000000_00101_00011_01000_00000_100011 // $5-$3 = $8(FFFF A987)
+000000_00101_00110_01000_00000_100011 // $5-$6 = $8(8000 4000)
+
+00000000_01000011_00000000_00011001// $2 * $3 ( hi: 0 lo: 0x000159E0)
+00000000_10100110_00000000_00011001// $5 * $6 (hi: 7FFF lo: 80004001)
+// FFFFFFF*7FFFBFFF(7FFF BFFE 8000 4001)
+00111000_01101011_00000000_00000000 // $3 xori 0 -> $11(00005678) 
+
+00000000_00000000_01010000_00010010 // FFFFFFF*7FFFBFFF result of low $10(80004001)
+10100000_01000101_00000000_00000000 // FF -> MEM$(4)
+10100000_01000011_00000000_00000001 // 78 -> MEM$(4+1
+10100000_01000011_00000000_00000010 // 78 -> MEM$(4+2
+10100000_01001010_00000000_00000100 // FF -> MEM$(4 +4)
+
+00000000_00000101_01001000_11000011 // shift $5>>>3 = 9$(1FFFFFFF)
+
+10010100_01001101_00000000_00000000//MEM$2(4) ->$13
+10010100_01001110_00000000_00000010//MEM$2(4+2)->$14
+10010100_01001111_00000000_00000100//MEM$2(4+4)->$15
+
+00011001_00000000_00000000_00000011// if($8<0)pc = pc+4+3<<2
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+00011000_10000000_00000000_00000011// if($4<0)pc = pc+4+3<<2
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+00011001_01100000_00000000_00000011// if($11<0)pc = pc+4+3<<2
+00000001_01100000_00000000_00001000// pc = $11
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+

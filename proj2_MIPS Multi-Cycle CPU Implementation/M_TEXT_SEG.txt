@@ -1,0 +1,59 @@
+//i opcode 6 rs 5 rt 5 im 16
+//r opcpde 6 rd 5 rs 5 rt 5 shamt 5 func 6
+00110100_00000010_00000000_00000100 // ori $2 | 0x0004 -> 0000004
+00110100_00000011_01010110_01111000 // ori $3 | 0x5678 -> 00005678
+00111100_00000100_11111111_11111111 // lui $4 0xFFFF0000 삽입
+00110100_10000100_11111111_11111111 // lui $4 0xFFFF -> FFFFFFFF
+00111100_00000101_01111111_11111111 // ori $5, 0x7FFF // 상수 삽입
+00110100_10100101_10111111_11101111 // ori $5, 0x0000BFFF // 상수 
+00110100_00000100_00100000_00000000 // ori $4 | 0x0004 -> 0000004
+00111100_11000110_11111111_11111111 // lui $4 0xFFFF -> FFFFFFFF
+//초기 레지스터 세팅
+//$2 : 0x0000_0004
+//$3 : 0x0000_5678
+//$4 : 0xFFFF_FFFF
+//$5 : 0x7FFF_BFFF
+00111000_01100110_11111111_11111111 // $3(5678)xori FFFF -> $0(0000A987 //285ns
+000000_00000_00011_00111_00111_000011 // $7 = $3 >>>7(AC)
+000000_00101_00101_01000_00111_000011 // $8 = $5>>>7(00ffff7f)
+000000_00101_00011	_01001_00000_100011 // $5-$3 = $9(7fff 6977)
+
+000000_00101_00110_01010_00000_100011 // $5-$6 = $10(7fff 1668)
+000000_00110_00101_01011_00000_101010 // $6 < $5? => $11(1)
+000000_00011_00010_01100_00000_101010 // $3 < $2? => $12(0)	
+00000000_01000011_00000000_00011001// $2 * $3 ( hi: 0 lo: 0x000159E0)
+
+00000000_10100100_00000000_00011001// $5 * $4 (hi: 0000 03FF lo: FDFF7800)
+00000000_00000000_01101000_00010010 // 0000800*7fffbfef result of low $13(FDFF7800)
+10100000_10000101_00000000_00000000 // FF -> MEM$(4	 
+10100000_10000101_00000000_00000001// FF -> MEM$(4+1
+10010100_10001110_00000000_00000000//MEM$4(4) ->$14(efef)
+00011000_11000000_00000000_00000011// if($6<0)pc = pc+4+3<<2
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+00011000_11000000_00000000_00000011// if($6<0)pc = pc+4+3<<2
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+00000001_01100000_00000000_00001000// pc = $11
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx
+xxxxxxxx_xxxxxxxx_xxxxxxxx_xxxxxxxx

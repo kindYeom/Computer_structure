@@ -1,0 +1,6 @@
+./sim-cache bin/li.little.ss inputs/train.lsp 2> traces/li.trace > results/li.out
+
+./sim-cache bin/vortex.little.ss inputs/vortex.raw 2> traces/vortex.trace
+
+./sim-cache bin/tomcatv.little.ss < inputs/tomcatv.in 2> traces/tomcatv.trace > results/tomcatv.out
+
